@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Thu Aug 11 22:33:53 2022
+# Make data base, printed on Fri Aug 12 17:49:01 2022
 
 # Variables
 
@@ -16,9 +16,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # automatic
 ?F = $(notdir $?)
 # environment
-ELECTRON_NO_ATTACH_CONSOLE = 1
-# environment
-LC_CTYPE = en_CA.UTF-8
+LC_CTYPE = 
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
@@ -40,7 +38,7 @@ MAKEFILE_LIST :=  Makefile
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
-VSCODE_CWD = /Users/jacobgoldfarb
+VSCODE_CWD = /
 # environment
 PATH = /usr/local/opt/openssl@3/bin:/Users/jacobgoldfarb/.rbenv/shims:/anaconda3/bin:/Users/jacobgoldfarb/.cargo/bin:/Users/jacobgoldfarb/.gem/ruby/2.6.0/bin:/Users/jacobgoldfarb/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/jacobgoldfarb/.cargo/bin
 # environment
@@ -72,8 +70,6 @@ HOME = /Users/jacobgoldfarb
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CLI = 1
-# environment
 VSCODE_CODE_CACHE_PATH = /Users/jacobgoldfarb/Library/Application Support/Code/CachedData/6d9b74a70ca9c7733b29f0456fd8195364076dda
 # environment
 LOGNAME = jacobgoldfarb
@@ -87,32 +83,24 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 XPC_FLAGS = 0x0
-# environment
-COLORTERM = truecolor
 # default
 MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
 # environment
-LC_TERMINAL = iTerm2
-# environment
-SHLVL = 3
+SHLVL = 1
 # default
 MAKE_VERSION := 3.81
 # environment
 USER = jacobgoldfarb
 # makefile
 .DEFAULT_GOAL := run
-# default
-MAKECMDGOALS := all
-# environment
-TERM_SESSION_ID = w0t0p0:BF78E1E2-2161-459A-8CDA-55250299E91E
 # environment
 LESS = -R
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # default
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
-# environment
-TERM_PROGRAM = iTerm.app
 # default
 .VARIABLES := 
 # environment
@@ -130,19 +118,11 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-TERM_PROGRAM_VERSION = 3.4.8
-# environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.9325783855.9325783861.00827B8E-83D1-49BC-A31D-306FAD1B2EFA
-# environment
-LC_TERMINAL_VERSION = 3.4.8
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.9325783855.9325783861
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
 +F = $(notdir $+)
-# environment
-ITERM_SESSION_ID = w0t0p0:BF78E1E2-2161-459A-8CDA-55250299E91E
-# environment
-COLORFGBG = 7;0
 # environment
 __CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x52
 # environment
@@ -153,8 +133,6 @@ MAKEFILES :=
 RBENV_SHELL = zsh
 # automatic
 <F = $(notdir $<)
-# environment
-ITERM_PROFILE = Default
 # environment
 PAGER = less
 # environment
@@ -170,11 +148,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-TERM = xterm-256color
-# environment
-VSCODE_PID = 64318
+VSCODE_PID = 95514
 # variable set hash-table stats:
-# Load=81/1024=8%, Rehash=0, Collisions=5/105=5%
+# Load=69/1024=7%, Rehash=0, Collisions=2/93=2%
 
 # Pattern-specific Variable Values
 
@@ -271,7 +247,7 @@ expr:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Thu Aug 11 22:33:53 2022
+# Finished Make data base on Fri Aug 12 17:49:01 2022
 
  
 make: *** No rule to make target `all'.  Stop.
