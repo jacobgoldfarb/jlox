@@ -2,7 +2,9 @@ package com.craftinginterpreters.lox;
 
 class AstPrinter implements Expr.Visitor<String> {
     String print(Expr expr) {
-        return expr.accept(this);
+        String message = expr.accept(this);
+        System.out.println(message);
+        return message;
     }
 
     @Override
@@ -39,8 +41,8 @@ class AstPrinter implements Expr.Visitor<String> {
         return builder.toString();
     }
 
-    public static void main(String[] args) {
-        // -123 * (45.67 + 0.33)
+    // -123 * (45.67 + 0.33)
+    public static void test() {
         Expr expression = new Expr.Binary(
             new Expr.Unary(
                 new Token(TokenType.MINUS, "-", null, 1),
