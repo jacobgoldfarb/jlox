@@ -34,21 +34,25 @@ public class Lox {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
         for (;;) {
-            System.out.print("> ");
+            System.out.print(">> ");
             String line = reader.readLine();
-            if (line == null) break;
+            if ("".equals(line)) continue;
             run(line);
             hadError = false;
         }
     }
 
     private static void run(String source) {
+        if (source == "") 
+            System.out.println("No source");
         Scanner scanner = new Scanner(source);
+        // "50 + -3 * ( 2 - 1 )" -> [50, "+", "-", 3, "*", "(", 2, "-", 1, ")"]
         List<Token> tokens = scanner.scanTokens();
+        
+        // [50, "+", "-", 3, "*", "(", 2, "-", 1, ")"] -> (/ (group (+ 1.0 2.0)) true)
         Parser parser = new Parser(tokens);
         Expr expression = parser.parse();
         new AstPrinter().print(expression);
-
 
         for (Token token : tokens) {
             System.out.println(token);

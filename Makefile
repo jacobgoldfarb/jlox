@@ -1,8 +1,13 @@
+crun: compile repl clean
+
 run: repl clean
 
+
 repl:
-	javac com/craftinginterpreters/lox/Lox.java
 	java com.craftinginterpreters.lox.Lox
+
+compile:
+	javac com/craftinginterpreters/lox/Lox.java
 
 gen expr:
 	javac com/craftinginterpreters/tool/GenerateAst.java
