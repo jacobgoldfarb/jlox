@@ -96,14 +96,14 @@ class Interpreter implements Expr.Visitor<Object> {
         if (object == null) return false;
         else if (object instanceof Boolean) return (boolean)object;
         else if (object instanceof Number) return (double)object != 0;
-        else if (object instanceof String) return (String)object != "";
+        else if (object instanceof String) return  !"".equals((String)object);
         return true;
     }
 
     private boolean isEqual(Object left, Object right) {
         if (left == null & right == null) return  true;
         if (left == null) return false;
-        return left.equals(right);
+        return isTruthy(left) == isTruthy(right);
     }
 
     private String stringify(Object object) {
