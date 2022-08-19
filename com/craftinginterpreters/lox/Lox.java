@@ -52,11 +52,11 @@ public class Lox {
         
         // [50, "+", "-", 3, "*", "(", 2, "-", 1, ")"] -> (/ (group (+ 1.0 2.0)) true)
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
+        List<Stmt> statements = parser.parse();
         // Stop if syntax error.
         if (hadError) return;
 
-        interpreter.interpret(expression);
+        interpreter.interpret(statements);
     }
 
     static void error(int line, String message) {

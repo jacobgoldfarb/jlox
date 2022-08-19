@@ -16,14 +16,20 @@ public class GenerateAst {
             "Binary     : Expr left, Token operator, Expr right",
             "Grouping   : Expr expression",
             "Literal    : Object value",
+            "Variable   : Token name",
             "Unary      : Token operator, Expr right"
+        ));
+        defineAst(outputDir, "Stmt", Arrays.asList(
+            "Expression : Expr expression",
+            "Var        : Token name, Expr initializer",
+            "Print      : Expr expression"
         ));
     }
 
     private static void defineAst( String outputDir, String baseName, List<String> types) throws IOException {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
-
+        writer.println("//AUTO-GENERATED FILE. DO NOT EDIT.;");
         writer.println("package com.craftinginterpreters.lox;");
         writer.println();
         writer.println("import java.util.List;");

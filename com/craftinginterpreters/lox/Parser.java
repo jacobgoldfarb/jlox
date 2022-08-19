@@ -1,5 +1,6 @@
 package com.craftinginterpreters.lox;
 
+import java.util.ArrayList;
 import java.util.List;
 import static com.craftinginterpreters.lox.TokenType.*;
 
@@ -14,16 +15,56 @@ class Parser {
         this.tokens = tokens;
     }
 
-    Expr parse() {
-        try {
-            return expression();
-        } catch (ParseError error) {
-            return null;
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        while (!isAtEnd()) {
+            statements.add(declaration());
         }
+        return statements;
     }
 
     private Expr expression() {
         return equality();
+    }
+
+    private Stmt declaration() {
+        try {
+            if (match_any(VAR)) return varDeclaration();
+            return statement();
+        } catch (ParseError error) {
+            synchronize();
+            return null;
+        }
+    }
+
+    private Stmt statement() {
+        if (match_any(PRINT)) return printStatement();
+
+        return expressionStatement();
+    }
+
+    private Stmt printStatement() {
+        Expr value = expression();
+        consume_semicolon();
+        return new Stmt.Print(value);
+    }
+
+    private Stmt varDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect variable name.");
+
+        Expr initializer = null;
+        if (match_any(EQUAL)) {
+            initializer = expression();
+        }
+
+        consume_semicolon();
+        return new Stmt.Var(name, initializer);
+    }
+
+    private Stmt expressionStatement() {
+        Expr value = expression();
+        consume_semicolon();
+        return new Stmt.Expression(value);
     }
 
     private Expr equality() {
@@ -94,6 +135,10 @@ class Parser {
             return new Expr.Literal(value.literal);
         } 
 
+        if (match_any(IDENTIFIER)) {
+
+        }
+
         if (match_any(LEFT_PAREN)) {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expect ')' after expression");
@@ -122,6 +167,11 @@ class Parser {
         if (match_one(type)) return advance();
         throw error(peek(), message);
     }
+
+    private Token consume_semicolon() {
+        return consume(SEMICOLON, "Expect ';' after value");
+    }
+
 
     private Token advance() {
         if (!isAtEnd()) current_token_idx++;

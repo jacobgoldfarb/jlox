@@ -1,0 +1,4 @@
+print "one";
+print 2 + 1/2;
+print "" == false;
+print 1.5 * 2; print "hello world";
