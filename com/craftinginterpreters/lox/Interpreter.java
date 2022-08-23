@@ -2,10 +2,9 @@ package com.craftinginterpreters.lox;
 
 import java.util.List;
 
-import com.craftinginterpreters.lox.Expr.Variable;
-import com.craftinginterpreters.lox.Stmt.Var;
-
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+
+    private Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
         try {
@@ -27,6 +26,10 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 return !isEqual(left, right);
             case EQUAL_EQUAL: 
                 return isEqual(left, right);
+            // case AND:
+            //     return (boolean)(isTruthy(left) && isTruthy(right));
+            // case OR:
+            //     return (boolean)(isTruthy(left) || isTruthy(right));
             case GREATER:
                 checkNumberOperands(expr.operator, left, right);
                 return (double)left > (double)right;
@@ -116,14 +119,25 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Void visitVarStmt(Var stmt) {
-        // TODO Auto-generated method stub
+    public Void visitVarStmt(Stmt.Var stmt) {
+        Object value = null;
+        if (stmt.initializer != null) {
+            value = evaluate(stmt.initializer);
+        }
+
+        environment.define(stmt.name.lexeme, value);
         return null;
     }
 
     @Override
-    public Object visitVariableExpr(Variable expr) {
-        // TODO Auto-generated method stub
+    public Object visitVariableExpr(Expr.Variable expr) {
+        return environment.get(expr.name);
+    }
+
+    @Override
+    public Object visitAssignExpr(Expr.Assign expr) {
+        Object value = evaluate(expr.value);
+        environment.assign(expr.name, value);
         return null;
     }
 
@@ -153,5 +167,5 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return object.toString();
     }
-    
+
 }

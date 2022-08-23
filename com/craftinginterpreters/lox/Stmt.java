@@ -1,4 +1,4 @@
-//AUTO-GENERATED FILE. DO NOT EDIT.
+// ***** AUTO-GENERATED FILE, DO NOT EDIT *****
 
 package com.craftinginterpreters.lox;
 
@@ -6,9 +6,23 @@ import java.util.List;
 
 abstract class Stmt {
  interface Visitor<R> {
+    R visitBlockStmt(Block stmt);
     R visitExpressionStmt(Expression stmt);
     R visitVarStmt(Var stmt);
     R visitPrintStmt(Print stmt);
+ }
+
+ static class Block extends Stmt {
+    Block(List<Stmt> statements) {
+        this.statements = statements;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visitBlockStmt(this);
+    }
+
+    final List<Stmt> statements;
  }
 
  static class Expression extends Stmt {

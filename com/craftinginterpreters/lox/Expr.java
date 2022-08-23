@@ -1,4 +1,4 @@
-//AUTO-GENERATED FILE. DO NOT EDIT.
+// ***** AUTO-GENERATED FILE, DO NOT EDIT *****
 
 package com.craftinginterpreters.lox;
 

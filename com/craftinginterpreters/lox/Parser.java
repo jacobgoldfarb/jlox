@@ -23,10 +23,6 @@ class Parser {
         return statements;
     }
 
-    private Expr expression() {
-        return equality();
-    }
-
     private Stmt declaration() {
         try {
             if (match_any(VAR)) return varDeclaration();
@@ -36,10 +32,10 @@ class Parser {
             return null;
         }
     }
-
+    
     private Stmt statement() {
         if (match_any(PRINT)) return printStatement();
-
+        
         return expressionStatement();
     }
 
@@ -51,22 +47,47 @@ class Parser {
 
     private Stmt varDeclaration() {
         Token name = consume(IDENTIFIER, "Expect variable name.");
-
+        
         Expr initializer = null;
         if (match_any(EQUAL)) {
             initializer = expression();
         }
-
+        
         consume_semicolon();
         return new Stmt.Var(name, initializer);
     }
-
+    
     private Stmt expressionStatement() {
         Expr value = expression();
         consume_semicolon();
         return new Stmt.Expression(value);
     }
 
+    private Expr expression() {
+        return assignment();
+    }
+
+    private Expr assignment() {
+        // l-value, allows for complex assignment like `makeList(a - 3).head.next = node;`
+        Expr expr = equality();
+
+        if (match_any(EQUAL)) {
+            Token equals = previous();
+            // r-value
+            Expr value = assignment();
+
+            // Check if l-value is Expr.Variable (identifier)
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable)expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
+    }
+    
     private Expr equality() {
         Expr expr = comparison();
 
