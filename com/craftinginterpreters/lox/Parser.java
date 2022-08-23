@@ -136,7 +136,7 @@ class Parser {
         } 
 
         if (match_any(IDENTIFIER)) {
-
+            return new Expr.Variable(previous());
         }
 
         if (match_any(LEFT_PAREN)) {
@@ -148,6 +148,7 @@ class Parser {
         throw error(peek(), "Expect expression.");
     }
 
+    /// Advances cursor on match
     private boolean match_any(TokenType... types) {
         for (TokenType type: types) {
             if (match_one(type)) {
@@ -169,7 +170,9 @@ class Parser {
     }
 
     private Token consume_semicolon() {
-        return consume(SEMICOLON, "Expect ';' after value");
+        return advance();
+        // uncomment to enable semicolons.
+        // return consume(SEMICOLON, "Expect ';' after value");
     }
 
 
