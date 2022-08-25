@@ -7,6 +7,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;    
 
 public class Lox {
     private static final Interpreter interpreter = new Interpreter();
@@ -28,7 +30,7 @@ public class Lox {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
 
-        // Indicate an error in the exite code.
+        // Indicate an error in the exit code.
         if (hadError) System.exit(65);
         if (hadRuntimeError) System.exit(70);
     }
@@ -36,13 +38,24 @@ public class Lox {
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
+
+        
+
+        System.out.print("Lox v0.9 (" + getTodayLabel() + ")\nType `exit` when finished.\n");
         for (;;) {
-            System.out.print(">> ");
+            System.out.print(">>> ");
             String line = reader.readLine();
             if ("".equals(line)) continue;
+            if ("exit".equals(line)) return;
             run(line);
             hadError = false;
         }
+    }
+
+    private static String getTodayLabel() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd yyyy, HH:mm:ss");  
+        LocalDateTime now = LocalDateTime.now();  
+        return dtf.format(now);
     }
 
     private static void run(String source) {
