@@ -1,0 +1,8 @@
+# venv
+mma-scraper
+
+# caches
+**/__pycache__
+
+# secrets
+secrets/**
