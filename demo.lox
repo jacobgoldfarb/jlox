@@ -1,4 +1,7 @@
-print "one";
-print 2 + 1/2;
-print "" == false;
-print 1.5 * 2; print "hello world";
+var greeting = "My name is ";
+var name = "Tinsel.";
+var age_str = " and I am ";
+var age = 23;
+var yo = " years old.";
+
+print greeting + name + age_str + age + yo;

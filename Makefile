@@ -2,9 +2,13 @@ crun: compile repl clean
 
 run: repl clean
 
+run_demo: compile demo
 
 repl:
 	java com.craftinginterpreters.lox.Lox
+
+demo:
+	java com.craftinginterpreters.lox.Lox demo.lox
 
 compile:
 	javac com/craftinginterpreters/lox/Lox.java

@@ -35,6 +35,7 @@ class Parser {
     
     private Stmt statement() {
         if (match_any(PRINT)) return printStatement();
+        if (match_any(LEFT_BRACE)) return new Stmt.Block(block());
         
         return expressionStatement();
     }
@@ -61,6 +62,17 @@ class Parser {
         Expr value = expression();
         consume_semicolon();
         return new Stmt.Expression(value);
+    }
+
+    private List<Stmt> block() {
+        List<Stmt> statements = new ArrayList<>();
+
+        while (!match_one(RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(declaration());
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
     }
 
     private Expr expression() {
@@ -191,11 +203,10 @@ class Parser {
     }
 
     private Token consume_semicolon() {
-        return advance();
+        // return advance();
         // uncomment to enable semicolons.
-        // return consume(SEMICOLON, "Expect ';' after value");
+        return consume(SEMICOLON, "Expect ';' after value");
     }
-
 
     private Token advance() {
         if (!isAtEnd()) current_token_idx++;

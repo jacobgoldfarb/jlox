@@ -16,6 +16,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
     }
 
+    /// Expr.Visitor implementation
+
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
         Object left = evaluate(expr.left);
@@ -48,8 +50,12 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case PLUS:
                 if (left instanceof Double && right instanceof Double)
                     return (double)left + (double)right;
-                else if (left instanceof String && right instanceof String)
-                    return (String)left + (String)right;
+                else if (left instanceof String || right instanceof String)
+                    try {
+                        return left.toString() + right.toString();
+                    } catch (ClassCastException error) {
+                        throw new RuntimeError(expr.operator, "Every operand must be castable to a string.");    
+                    }
                 else
                     throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
             case SLASH:
@@ -87,60 +93,76 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
-    private void checkNumberOperand(Token operator, Object operand) {
-        if (operand instanceof Double) return;
-        throw new RuntimeError(operator, "Operand must be a number.");
-    }
-
-    private void checkNumberOperands(Token operator, Object left, Object right) {
-        if (left instanceof Double && right instanceof Double) return;
-        throw new RuntimeError(operator, "Operands must be a numbers.");
-    }
-
-    private Object evaluate(Expr expr) {
-        return expr.accept(this);
-    }
-
-    private void execute(Stmt stmt) {
-        stmt.accept(this);
-    }
-
+    
+    /// Stmt.Visitor implementation
+    
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt) {
         evaluate(stmt.expression);
         return null;
     }
-
+    
     @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
         Object value = evaluate(stmt.expression);
         System.out.println(stringify(value));
         return null;
     }
-
+    
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
         Object value = null;
         if (stmt.initializer != null) {
             value = evaluate(stmt.initializer);
         }
-
+        
         environment.define(stmt.name.lexeme, value);
         return null;
     }
-
+    
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) {
+        executeBlock(stmt.statements, new Environment(environment));
+        return null;
+    }
+    
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
         return environment.get(expr.name);
     }
-
+    
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Object value = evaluate(expr.value);
         environment.assign(expr.name, value);
         return null;
     }
+    
+    // Evaluates an expression, e.g., 2 + 3 / 6  -> 2.5
+    private Object evaluate(Expr expr) {
+        return expr.accept(this);
+    }
 
+    // Executes an expression, i.e., prints to console or stores data in variables
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
+    }
+
+    // Executes every statement in a block while considering variables in the proper scope.
+    void executeBlock(List<Stmt> statements, Environment environment) {
+        Environment previous = this.environment;
+        try {
+            this.environment = environment;
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
+        } finally {
+            this.environment = previous;
+        }
+    }
+
+    /// Helpers
+    
     private boolean isTruthy(Object object) {
         if (object == null) return false;
         else if (object instanceof Boolean) return (boolean)object;
@@ -168,4 +190,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return object.toString();
     }
 
+    // Type checking helpers
+    private void checkNumberOperand(Token operator, Object operand) {
+        if (operand instanceof Double) return;
+        throw new RuntimeError(operator, "Operand must be a number.");
+    }
+
+    private void checkNumberOperands(Token operator, Object left, Object right) {
+        if (left instanceof Double && right instanceof Double) return;
+        throw new RuntimeError(operator, "Operands must be a numbers.");
+    }
 }
