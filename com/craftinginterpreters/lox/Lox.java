@@ -39,14 +39,14 @@ public class Lox {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
-        
-
         System.out.print("Lox v0.9 (" + getTodayLabel() + ")\nType `exit` when finished.\n");
         for (;;) {
             System.out.print(">>> ");
             String line = reader.readLine();
+
             if ("".equals(line)) continue;
             if ("exit".equals(line)) return;
+
             run(line);
             hadError = false;
         }

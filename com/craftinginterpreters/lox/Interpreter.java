@@ -93,6 +93,23 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+        Object left = evaluate(expr.left);
+
+        switch (expr.operator.type) {
+            case AND:
+                // Short circuit return false
+                if (!isTruthy(left)) return left;
+            case OR:
+                // Short circuit return true
+                if (isTruthy(left)) return left;
+        }
+
+        // Right expression evaluation result is then the same as that of the entire expression.
+        return evaluate(expr.right);
+    }
+
     
     /// Stmt.Visitor implementation
     
@@ -120,6 +137,17 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
     
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) {
+        Object value = evaluate(stmt.condition);
+        if (isTruthy(value)) {
+            execute(stmt.thenBranch);
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch);
+        }
+        return null;
+    }
+
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
@@ -200,4 +228,5 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (left instanceof Double && right instanceof Double) return;
         throw new RuntimeError(operator, "Operands must be a numbers.");
     }
+
 }
