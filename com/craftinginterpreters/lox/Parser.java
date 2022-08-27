@@ -1,6 +1,7 @@
 package com.craftinginterpreters.lox;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static com.craftinginterpreters.lox.TokenType.*;
 
@@ -35,11 +36,63 @@ class Parser {
     
     private Stmt statement() {
         if (match_any(IF)) return ifStatement();
+        if (match_any(FOR)) return forStatement();
         if (match_any(WHILE)) return whileStatement();
         if (match_any(PRINT)) return printStatement();
         if (match_any(LEFT_BRACE)) return new Stmt.Block(block());
         
         return expressionStatement();
+    }
+
+    private Stmt forStatement() {
+        consume(LEFT_PAREN, "Expect '(' after 'if'.");
+        Stmt initializer;
+        if (match_any(SEMICOLON)) {
+            initializer = null;
+        } else if (match_any(VAR)) {
+            initializer = varDeclaration();
+        } else {
+            initializer = expressionStatement();
+        }
+
+        Expr condition = null;
+        if (!match_one(SEMICOLON)) {
+            condition = expression();
+        }
+        consume(SEMICOLON, "Expect ';' after loop condition.");
+
+        Expr increment = null;
+        if (!match_one(RIGHT_PAREN)) {
+            increment = expression();
+        }
+        Stmt body = statement();
+
+        // If there is an increment then replace the body with a block that executes the body
+        // followed by the increment expression.
+        if (increment != null) {
+            body = new Stmt.Block(
+                Arrays.asList(
+                    body,
+                    new Stmt.Expression(increment)
+                )
+            );
+        }
+
+        if (condition == null) condition = new Expr.Literal(true);
+        body = new Stmt.While(condition, body);
+
+        // If there is an initializer, then wrap the Stmt.While statement in a block that
+        // executes the initializer once before the body.
+        if (initializer != null) {
+            body = new Stmt.Block(
+                Arrays.asList(
+                    initializer,
+                    body
+                )
+            );
+        }
+
+        return body;
     }
 
     private Stmt ifStatement() {
