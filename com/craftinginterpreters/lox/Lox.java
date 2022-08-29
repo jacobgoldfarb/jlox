@@ -60,7 +60,7 @@ public class Lox {
 
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
-        // "50 + -3 * ( 2 - 1 )" -> [50, "+", "-", 3, "*", "(", 2, "-", 1, ")"]
+        // "50 + -3 * ( 2 - 1 )" -> Tokens([50, "+", "-", 3, "*", "(", 2, "-", 1, ")"])
         List<Token> tokens = scanner.scanTokens();
         
         // [50, "+", "-", 3, "*", "(", 2, "-", 1, ")"] -> (/ (group (+ 1.0 2.0)) true)

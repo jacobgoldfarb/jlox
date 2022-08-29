@@ -96,6 +96,27 @@ class Parser {
         return body;
     }
 
+    private List<Stmt> breakBlock(String forLoopHash) {
+        List<Stmt> statements = new ArrayList<>();
+
+        while (!match_one(RIGHT_BRACE) && !match_one(BREAK) && !isAtEnd()) {
+            statements.add(declaration());
+        }
+        if (match_any(BREAK)) {
+            statements.add(breakStatement(forLoopHash));
+        }
+        while (!match_one(RIGHT_BRACE) && !match_one(BREAK) && !isAtEnd()) {
+            statements.add(declaration());
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
+    }
+
+    private Stmt breakStatement(String forLoopHash) {
+        return new Stmt.Break(forLoopHash);
+    }
+
     private Stmt ifStatement() {
         consume(LEFT_PAREN, "Expect '(' after 'if'.");
         Expr condition = expression();

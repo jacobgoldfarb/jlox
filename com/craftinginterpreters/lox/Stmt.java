@@ -11,6 +11,7 @@ abstract class Stmt {
     R visitIfStmt(If stmt);
     R visitWhileStmt(While stmt);
     R visitPrintStmt(Print stmt);
+    R visitBreakStmt(Break stmt);
     R visitVarStmt(Var stmt);
  }
 
@@ -83,6 +84,19 @@ abstract class Stmt {
     }
 
     final Expr expression;
+ }
+
+ static class Break extends Stmt {
+    Break(String loopHash) {
+        this.loopHash = loopHash;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visitBreakStmt(this);
+    }
+
+    final String loopHash;
  }
 
  static class Var extends Stmt {
