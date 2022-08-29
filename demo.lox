@@ -4,4 +4,5 @@ var age_str = " and I am ";
 var age = 23;
 var yo = " years old.";
 
-print greeting + name + age_str + age + yo;
+var i;
+for (i = 0; i < 10; i += 1) print i;

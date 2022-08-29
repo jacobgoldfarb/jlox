@@ -6,3 +6,6 @@ mma-scraper
 
 # secrets
 secrets/**
+
+# compiled
+**/*.class

@@ -1,0 +1,8 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/jacobgoldfarb/Developer/crafting_interpreters/part_1'
+javac com/craftinginterpreters/lox/Lox.java
+java com.craftinginterpreters.lox.Lox
+rm com/craftinginterpreters/lox/*.class 
+rm com/craftinginterpreters/tool/*.class
+make: Leaving directory `/Users/jacobgoldfarb/Developer/crafting_interpreters/part_1'
+ 

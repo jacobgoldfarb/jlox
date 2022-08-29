@@ -65,6 +65,7 @@ class Parser {
         if (!match_one(RIGHT_PAREN)) {
             increment = expression();
         }
+        consume(RIGHT_PAREN, "Expect ')' after loop condition.");
         Stmt body = statement();
 
         // If there is an increment then replace the body with a block that executes the body
