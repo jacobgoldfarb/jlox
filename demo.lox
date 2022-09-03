@@ -1,3 +1,4 @@
+var clock1 = clock();
 var greeting = "My name is ";
 var name = "Tinsel.";
 var age_str = " and I am ";
@@ -5,4 +6,12 @@ var age = 23;
 var yo = " years old.";
 
 var i;
-for (i = 0; i < 10; i += 1) print i;
+for (i = 0; i < 10; i = i + 1) print i;
+var clock2 = clock();
+print "program took " + (clock2 - clock1) + " secs to run";
+
+fun addOne(startVal) {
+    print(startVal + 1);
+}
+
+addOne(41);
