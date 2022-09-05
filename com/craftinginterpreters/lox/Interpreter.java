@@ -2,42 +2,16 @@ package com.craftinginterpreters.lox;
 
 import java.util.List;
 import java.util.ArrayList;
+import com.craftinginterpreters.lox.native_functions.*;
 
-class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     final Environment globals = new Environment();
     private Environment curEnvironment = globals;
 
     Interpreter() {
-        globals.define("clock", new LoxCallable() {
-            @Override
-            public int arity() { return 0; }
-
-            @Override
-            public Object call(Interpreter interpreter,
-                                List<Object> arguments) {
-                return (double)System.currentTimeMillis() / 1000.0;
-            }
-
-            @Override
-            public String toString() { return "<native fn>"; }
-        });
-
-        globals.define("print", new LoxCallable() {
-            @Override
-            public int arity() { return 1; }
-
-            @Override
-            public Object call(Interpreter interpreter,
-                                List<Object> arguments) {
-                char[] output = (char[])arguments.get(0);
-                System.out.println(output);
-                return null;
-            }
-
-            @Override
-            public String toString() { return "<native fn>"; }
-        });
+        globals.define("clock", new Clock());
+        globals.define("print", new Print());
     }
     
     void interpret(List<Stmt> statements) {
@@ -187,13 +161,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
     
     @Override
-    public Void visitPrintStmt(Stmt.Print stmt) {
-        Object value = evaluate(stmt.expression);
-        System.out.println(stringify(value));
-        return null;
-    }
-    
-    @Override
     public Void visitVarStmt(Stmt.Var stmt) {
         Object value = null;
         if (stmt.initializer != null) {
@@ -231,8 +198,16 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-        curEnvironment.define(stmt.name.lexeme, new LoxFunction(stmt));
+        curEnvironment.define(stmt.name.lexeme, new LoxFunction(stmt, curEnvironment));
         return null;
+    }
+
+    @Override
+    public Void visitReturnStmt(Stmt.Return stmt) {
+        Object value = null;
+        if (stmt.value != null) value = evaluate(stmt.value);
+
+        throw new Return(value);
     }
     
     // Evaluates an expression, e.g., 2 + 3 / 6  -> 2.5

@@ -40,7 +40,7 @@ class Parser {
         if (match(IF)) return ifStatement();
         if (match(FOR)) return forStatement();
         if (match(WHILE)) return whileStatement();
-        if (match(PRINT)) return printStatement();
+        if (match(RETURN)) return returnStatement();
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
         
         return expressionStatement();
@@ -122,10 +122,15 @@ class Parser {
         return new Stmt.While(condition, body);
     }
 
-    private Stmt printStatement() {
-        Expr value = expression();
+    private Stmt returnStatement() {
+        Token keyword = previous();
+        Expr value = null;
+        if (!check(SEMICOLON)) {
+            value = expression();
+        }
         consume_semicolon();
-        return new Stmt.Print(value);
+
+        return new Stmt.Return(keyword, value);
     }
 
     private Stmt varDeclaration() {
@@ -387,7 +392,7 @@ class Parser {
             if (previous().type == SEMICOLON) return;
             // All the token types which indicate the start of a new statement
             switch (peek().type) {
-                case CLASS: case FOR: case FUN: case IF: case PRINT:
+                case CLASS: case FOR: case FUN: case IF:
                 case RETURN: case VAR: case WHILE:
                 return;
             }
