@@ -13,7 +13,7 @@ class Parser {
     private int current_token_idx = 0;
 
     
-    Parser(List<Token> tokens) {
+     Parser(List<Token> tokens) {
         this.tokens = tokens;
     }
 
@@ -288,7 +288,6 @@ class Parser {
         Expr expr = primary();
         while (true) {
             if (match(LEFT_PAREN)) {
-                // Consumes args and right paren
                 expr = finishCall(expr);
             } else {
                 break;
@@ -298,6 +297,7 @@ class Parser {
         return expr;
     }
 
+    // Parse args and consume right paren
     private Expr finishCall(Expr callee) {
         List<Expr> arguments = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
@@ -386,6 +386,7 @@ class Parser {
         return new ParseError();
     }
 
+    // Seek past problematic statement
     private void synchronize() {
         advance();
         while (!isAtEnd()) {

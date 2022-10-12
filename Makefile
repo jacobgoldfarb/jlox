@@ -18,6 +18,5 @@ gen expr:
 	java com.craftinginterpreters.tool.GenerateAst com/craftinginterpreters/lox 
 
 clean:
-	rm com/craftinginterpreters/lox/**/*.class 
-	rm com/craftinginterpreters/lox/*.class 
-	rm com/craftinginterpreters/tool/*.class
+	rm com/craftinginterpreters/**/**/*.class 
+	rm com/craftinginterpreters/**/*.class 

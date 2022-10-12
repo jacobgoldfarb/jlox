@@ -1,13 +1,16 @@
 package com.craftinginterpreters.lox;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import com.craftinginterpreters.lox.native_functions.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     final Environment globals = new Environment();
     private Environment curEnvironment = globals;
+    private final Map<Expr, Integer> locals = new HashMap<>();
 
     Interpreter() {
         globals.define("clock", new Clock());
@@ -142,14 +145,30 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
-        return curEnvironment.get(expr.name);
+        return lookUpVariable(expr.name, expr);
+    }
+
+    private Object lookUpVariable(Token name, Expr expr) {
+        Integer distance = locals.get(expr);
+        if (distance != null) {
+            return curEnvironment.getAt(distance, name.lexeme);
+        } else {
+            return globals.get(name);
+        }
     }
     
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Object value = evaluate(expr.value);
-        curEnvironment.assign(expr.name, value);
-        return null;
+        
+        Integer distance = locals.get(expr);
+        if (distance != null) {
+            curEnvironment.assignAt(distance, expr.name, value);
+        } else {
+            globals.assign(expr.name, value);
+        }
+
+        return value;
     }
     
     /// Stmt.Visitor implementation
@@ -218,6 +237,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     // Executes an expression, i.e., prints to console or stores data in variables
     private void execute(Stmt stmt) {
         stmt.accept(this);
+    }
+
+    void resolve(Expr expr, int depth) {
+        locals.put(expr, depth);
     }
 
     // Executes every statement in a block while considering variables in the proper scope.

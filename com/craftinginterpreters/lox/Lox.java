@@ -60,13 +60,18 @@ public class Lox {
 
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
-        // "50 + -3 * ( 2 - 1 )" -> [50, +, -, 3, *, "(", 2, "-", 1, ")"]
+        // "50 + -3 * ( 2 - 1 )" -> [50, +, -, 3, *, (, 2, -, 1, )]
         List<Token> tokens = scanner.scanTokens();
         
         // [50, "+", "-", 3, "*", "(", 2, "-", 1, ")"] -> (/ (group (+ 1.0 2.0)) true)
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();
         // Stop if syntax error.
+        if (hadError) return;
+
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
         if (hadError) return;
 
         interpreter.interpret(statements);
