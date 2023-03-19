@@ -27,6 +27,7 @@ class Parser {
 
     private Stmt declaration() {
         try {
+            if (match(CLASS)) return classDeclaration();
             if (match(FUN)) return function("function");
             if (match(VAR)) return varDeclaration();
             return statement();
@@ -34,6 +35,19 @@ class Parser {
             synchronize();
             return null;
         }
+    }
+
+    private Stmt.Class classDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect class name.");
+        consume(LEFT_BRACE, "Expected '{' before class body.");
+
+        List<Stmt.Function> methods = new ArrayList<>();
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            methods.add(function("method"));
+        }
+        consume(RIGHT_BRACE, "Expected '}' after class body.");
+
+        return new Stmt.Class(name, methods);
     }
     
     private Stmt statement() {
@@ -122,7 +136,7 @@ class Parser {
         return new Stmt.While(condition, body);
     }
 
-    private Stmt returnStatement() {
+    private Stmt.Return returnStatement() {
         Token keyword = previous();
         Expr value = null;
         if (!check(SEMICOLON)) {
@@ -133,7 +147,7 @@ class Parser {
         return new Stmt.Return(keyword, value);
     }
 
-    private Stmt varDeclaration() {
+    private Stmt.Var varDeclaration() {
         Token name = consume(IDENTIFIER, "Expect variable name.");
         
         Expr initializer = null;
